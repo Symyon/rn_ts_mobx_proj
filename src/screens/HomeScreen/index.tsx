@@ -27,8 +27,12 @@ export interface State {}
 @inject("profileStore")
 @observer
 class HomeScreen extends React.Component<Props, State> {
+  componentDidMount() {
+    this.props.profileStore.fetchUserDetails();
+  }
+
   signOut = async () => {
-    await AsyncStorage.multiRemove(['@userToken']);
+    await AsyncStorage.removeItem('@userToken');
     this.props.navigation.navigate(ROUTES.RootAuth);
   };
 
@@ -41,9 +45,9 @@ class HomeScreen extends React.Component<Props, State> {
             <Title style={{color: '#888888'}}>Welcome back</Title>
           </Body>
         </Header>
-        <Content>
+        <Content centerContent>
           <View padder>
-            <H2>{user.fullName}</H2>
+            <H2 style={{textAlign: 'center'}}>{user.fullName}</H2>
           </View>
           <View padder>
             <Button block warning onPress={this.signOut}>

@@ -17,23 +17,11 @@ export interface State {}
 @observer
 class AuthLoadingScreeen extends React.Component<Props, State> {
   componentDidMount() {
-    this.bootstrapAsync();
+    this.authFlow();
   }
 
-  bootstrapAsync = async () => {
+  authFlow = async () => {
     const userToken = await AsyncStorage.getItem('@userToken');
-    const userJSON = await AsyncStorage.getItem('@user');
-    const userObject = userJSON ? JSON.parse(userJSON) : null;
-    const user = userObject
-      ? new User(
-          userObject['fullName'],
-          userObject['email'],
-          userObject['password'],
-        )
-      : new User('', '', '');
-
-    this.props.profileStore.setInitialUser(user);
-
     const initialRouteName = userToken ? ROUTES.RootApp : ROUTES.RootAuth;
     this.props.navigation.navigate(initialRouteName);
   };
