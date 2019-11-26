@@ -14,33 +14,43 @@ import {
   H2,
   Footer,
 } from 'native-base';
-import {NavigationStackScreenProps} from 'react-navigation-stack';
+import AsyncStorage from '@react-native-community/async-storage';
+import { inject, observer } from 'mobx-react';
 import {ROUTES} from '../../routes';
 
-class HomeScreen extends React.Component<NavigationStackScreenProps> {
+export interface Props {
+	navigation: any,
+	profileStore: any,
+}
+export interface State {}
+
+@inject("profileStore")
+@observer
+class HomeScreen extends React.Component<Props, State> {
+  signOut = async () => {
+    await AsyncStorage.multiRemove(['@userToken']);
+    this.props.navigation.navigate(ROUTES.RootAuth);
+  };
+
   render() {
+    const user = this.props.profileStore.user;
     return (
       <Container>
         <Header>
           <Body>
-            <Title style={{color: '#888888'}}>
-              Welcome back
-            </Title>
+            <Title style={{color: '#888888'}}>Welcome back</Title>
           </Body>
         </Header>
         <Content>
           <View padder>
-            <H2>Full Name</H2>
+            <H2>{user.fullName}</H2>
           </View>
           <View padder>
-          <Button
-            block
-            warning
-            onPress={() => this.props.navigation.navigate(ROUTES.RootAuth)}>
-            <Text>Logout</Text>
-          </Button>
+            <Button block warning onPress={this.signOut}>
+              <Text>Logout</Text>
+            </Button>
           </View>
-        </Content>       
+        </Content>
       </Container>
     );
   }
